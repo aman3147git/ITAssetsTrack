@@ -17,10 +17,15 @@ const requestSchema = new mongoose.Schema({
     default: 'Pending' 
   },
   managerComments: String,
+  approvedBy: {   
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null 
+  },
   submittedAt: { 
     type: Date, 
     default: Date.now 
   },
-});
+}, { timestamps: true });
 
 export const Request = mongoose.model('Request', requestSchema);

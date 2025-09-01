@@ -1,9 +1,16 @@
 import { Request } from '../models/requestModel.js';
 
-// POST: /api/request
 export const createRequest = async (req, res) => {
   try {
     const { assetType, justification, neededBy } = req.body;
+
+    if (!req.user) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    if (!assetType || !justification || !neededBy) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const newRequest = new Request({
       requestedBy: req.user._id,
@@ -15,21 +22,25 @@ export const createRequest = async (req, res) => {
     const saved = await newRequest.save();
     res.status(201).json(saved);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create request', error });
+    console.error("Create request error:", error);
+    res.status(500).json({ message: 'Failed to create request', error: error.message });
   }
 };
 
-// GET: /api/request/my
+
 export const getMyRequests = async (req, res) => {
   try {
-    const requests = await Request.find({ requestedBy: req.user._id }).populate('requestedBy', 'name email');
+    const requests = await Request.find({ requestedBy: req.user._id,approvedBy: req.user._id }).populate('requestedBy', 'name email')
+    .populate('approvedBy', 'name email');
+    console.log(requests);
+    
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch requests', error });
   }
 };
 
-// GET: /api/request/pending (Manager only)
+
 export const getPendingRequests = async (req, res) => {
   try {
     if (req.user.role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
@@ -41,7 +52,7 @@ export const getPendingRequests = async (req, res) => {
   }
 };
 
-// PATCH: /api/request/:id
+
 export const updateRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -51,14 +62,34 @@ export const updateRequestStatus = async (req, res) => {
 
     const updated = await Request.findByIdAndUpdate(
       id,
-      { status, managerComments },
+      { status, managerComments,approvedBy: req.user._id  },
       { new: true }
-    );
+    ).populate('requestedBy', 'name email')
+    .populate('approvedBy', 'name email');
 
     if (!updated) return res.status(404).json({ message: 'Request not found' });
-
-    res.json(updated);
+    console.log("Updated request:", updated);
+    
   } catch (error) {
     res.status(500).json({ message: 'Failed to update request', error });
+  }
+};
+
+export const getRequestHistory = async (req, res) => {
+  try {
+    if (req.user.role !== 'manager') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    const requests = await Request.find({
+      status: { $in: ['Approved', 'Rejected','Pending'] }
+    })
+      .populate('requestedBy', 'name email')
+      .populate('approvedBy', 'name email')
+      .sort({ updatedAt: -1 });
+
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch request history', error });
   }
 };

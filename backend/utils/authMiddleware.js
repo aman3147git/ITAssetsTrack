@@ -1,25 +1,24 @@
 import jwt from "jsonwebtoken";
-export const verifytoken=async(req,res,next)=>{
-    const mytoken=req.cookies.token;
-    if(!mytoken){
-        return res.status(401).json({
-            message:"token not found",
-            success:false
-        })
+import { User } from "../models/userModel.js";
+
+export const authMiddleware = async (req, res, next) => {
+  try {
+    const token = req.cookies.token; 
+
+    if (!token) {
+      return res.status(401).json({ message: "Not authorized, no token" });
     }
-    try {
-        
-        
-        await jwt.verify(mytoken,process.env.SECRET_KEY,(err,user)=>{
-            if(err){
-                console.log(err);
-            }
-            req.user =user;
-            next();
-        });
-        
-    } catch (error) {
-        console.log(error);
+
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = await User.findById(decoded.id).select("-password");
+
+    if (!req.user) {
+      return res.status(401).json({ message: "User not found" });
     }
-    
-}
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ message: "Not authorized, token failed" });
+  }
+};

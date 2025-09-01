@@ -3,14 +3,19 @@ import {
   createRequest,
   getMyRequests,
   getPendingRequests,
+  getRequestHistory,
   updateRequestStatus,
 } from '../controllers/requestController.js';
+import { authMiddleware } from "../utils/authMiddleware.js";
 
 const router = express.Router();
 
-router.post('/', createRequest);
-router.get('/my', getMyRequests);
-router.get('/pending', getPendingRequests);
-router.patch('/:id', updateRequestStatus);
+router.post('/',authMiddleware, createRequest);
+router.get('/my',authMiddleware, getMyRequests);
+router.get('/pending',authMiddleware, getPendingRequests);
+router.patch('/:id',authMiddleware, updateRequestStatus);
+
+router.get('/history',authMiddleware, getRequestHistory);
+
 
 export default router;

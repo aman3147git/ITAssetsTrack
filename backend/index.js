@@ -6,20 +6,24 @@ import { connectDB } from './utils/database.js';
 import requestRoutes from './routes/requestRoutes.js';
 import userRoute from './routes/userRoutes.js';
 
-
 dotenv.config();
 const app = express();
 
-app.use(cors());
+
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-app.use('/api/user',userRoute);
-app.use('/api/request', requestRoutes);
+const corsOptions = {
+  origin: "http://localhost:5173", 
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 
+app.use('/api/user', userRoute);
+app.use('/api/requests', requestRoutes);
 
 
 const PORT = process.env.PORT || 8080;

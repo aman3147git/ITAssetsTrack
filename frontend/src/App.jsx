@@ -1,27 +1,72 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
 import { useSelector } from "react-redux";
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import ManagerDashboard from "./pages/ManagerDashboard";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import CreateRequest from "./pages/CreateRequest.jsx";
+import MyRequests from "./pages/MyRequests.jsx";
+import ManagerDashboard from "./pages/ManagerDashboard.jsx";
 
-function App() {
-  const { user } = useSelector((state) => state.auth);
-
+export default function App() {
+  const { user } = useSelector((s) => s.auth);
+ 
   return (
     <BrowserRouter>
       {user && <Navbar />}
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/manager" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
+        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+        <Route
+          path="/register"
+          element={user ? <Navigate to="/" /> : <Register />}
+        />
+
+        
+        <Route
+          path="/"
+          element={
+            user?.role === "employee" ? (
+              <Dashboard />
+            ) : user?.role === "manager" ? (
+              <Navigate to="/manager" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/request/new"
+          element={
+            user?.role === "employee" ? (
+              <CreateRequest />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/my-requests"
+          element={
+            user?.role === "employee" ? (
+              <MyRequests />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        
+        <Route
+          path="/manager"
+          element={
+            user?.role === "manager" ? (
+              <ManagerDashboard />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

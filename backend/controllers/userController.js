@@ -74,47 +74,4 @@ export const Logout=(req,res)=>{
         success:true
     })
 }
-export const Delete=async(req,res)=>{
-    try {
-        if(req.user.id!==req.params.userid){
-            return res.status(401).json({
-                message:"id doesn't match",
-                success:false
-            })
-        }
-        await User.findByIdAndDelete(req.params.userid);
-        return res.status(200).json({
-            message:"Account deleted",
-            success:true
-        })  
-    } catch (error) {
-        console.log(error);
-    }
-    
-}
-export const Update=async(req,res)=>{
-    try {
-        if(req.user.id!==req.params.userid){
-            return res.status(401).json({
-                message:"id doesn't match",
-                success:false
-            }) 
-        }
-        if(req.body.password){
-            req.body.password=bcryptjs.hashSync(req.body.password,10); 
-        }
-        const updateduser=await User.findByIdAndUpdate(req.params.userid,{
-            $set:{
-                name:req.body.name,
-                email:req.body.email,
-                password:req.body.password,
-                role:req.body.role
-            }
-        },{new:true});
-        const {password,...rest}=updateduser._doc;
-        return res.status(200).json(rest);
-        
-    } catch (error) {
-        console.log(error);
-    }
-}
+
