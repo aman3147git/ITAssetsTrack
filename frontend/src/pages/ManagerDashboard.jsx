@@ -89,54 +89,57 @@ export default function ManagerDashboard() {
           )}
         </div>
 
-        <div className="flex-1 bg-gradient-to-b from-gray-900 to-black p-6 rounded-xl shadow-xl border border-gray-800">
-          <h2 className="text-2xl font-bold mb-6 text-white tracking-wide">
-            Request History
-          </h2>
-          {historyRequests.length === 0 ? (
-            <p className="text-gray-400">No history available</p>
-          ) : (
-            <ul className="space-y-5">
-              {historyRequests.map((req) => (
-                <li
-                  key={req._id}
-                  className="rounded-xl p-5 bg-gray-800/60 border border-gray-700 backdrop-blur-md shadow-lg hover:shadow-2xl hover:scale-[1.01] transform transition duration-300"
-                >
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-white">
-                      {req.assetType}
-                    </h3>
-                    <span
-                      className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                        req.status === "Approved"
-                          ? "bg-green-500/20 text-green-400 border border-green-500"
-                          : "bg-red-500/20 text-red-400 border border-red-500"
-                      }`}
-                    >
-                      {req.status}
-                    </span>
-                  </div>
-                  <p className="text-gray-300">
-                    <strong>Employee:</strong> {req.requestedBy?.name || "N/A"}
-                  </p>
-                  <p className="text-gray-300">
-                    <strong>Justification:</strong> {req.justification}
-                  </p>
-                  <p className="text-gray-300">
-                    <strong>Approved/Rejected By:</strong>{" "}
-                    {req.approvedBy ? req.approvedBy.name : "Pending"}
-                  </p>
-                  <p className="text-gray-300">
-                    <strong>Submitted At:</strong> {req.submittedAt}
-                  </p>
-                  <p className="text-gray-300">
-                    <strong>Approved on:</strong> {req.updatedAt}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <div className="flex-1 bg-gradient-to-br from-black via-neutral-900 to-black p-6 rounded-xl shadow-xl border border-gray-800">
+  <h2 className="text-2xl font-bold mb-6 text-white tracking-wide">
+    Request History
+  </h2>
+  {historyRequests.length === 0 ? (
+    <p className="text-gray-400">No history available</p>
+  ) : (
+    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {historyRequests.map((req) => (
+        <li
+          key={req._id}
+          className="rounded-lg p-4 bg-gray-900/60 border border-gray-700 
+                     backdrop-blur-md shadow-md hover:shadow-xl 
+                     hover:scale-[1.02] transition-all duration-300"
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-base font-semibold text-white truncate">
+              {req.assetType}
+            </h3>
+            <span
+              className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                req.status === "Approved"
+                  ? "bg-green-500/20 text-green-400 border border-green-500"
+                  : req.status === "Rejected"
+                  ? "bg-red-500/20 text-red-400 border border-red-500"
+                  : "bg-yellow-500/20 text-yellow-400 border border-yellow-500"
+              }`}
+            >
+              {req.status}
+            </span>
+          </div>
+
+          <p className="text-sm text-gray-300">
+            <strong>Employee:</strong> {req.requestedBy?.name || "N/A"}
+          </p>
+          <p className="text-sm text-gray-300 line-clamp-2">
+            <strong>Justification:</strong> {req.justification}
+          </p>
+          <p className="text-sm text-gray-400">
+            <strong>By:</strong> {req.approvedBy ? req.approvedBy.name : "Pending"}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {new Date(req.submittedAt).toLocaleDateString()} →{" "}
+            {req.updatedAt ? new Date(req.updatedAt).toLocaleDateString() : "—"}
+          </p>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
       </div>
     </div>
   );

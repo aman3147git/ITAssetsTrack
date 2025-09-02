@@ -68,7 +68,7 @@ export const updateRequestStatus = async (req, res) => {
     .populate('approvedBy', 'name email');
 
     if (!updated) return res.status(404).json({ message: 'Request not found' });
-    console.log("Updated request:", updated);
+    
     
   } catch (error) {
     res.status(500).json({ message: 'Failed to update request', error });

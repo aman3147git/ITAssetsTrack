@@ -7,7 +7,7 @@ const requestSchema = new mongoose.Schema({
   },
   assetType: { 
     type: String, 
-    enum: ['Laptop', 'Monitor', 'Keyboard', 'Mouse'] 
+    required:true
   },
   justification: String,
   neededBy: Date,

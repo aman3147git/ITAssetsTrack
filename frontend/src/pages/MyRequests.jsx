@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { FaLaptop, FaMouse, FaKeyboard, FaMobileAlt, FaPrint } from "react-icons/fa";
+import { FaLaptop, FaMouse, FaKeyboard, FaMobileAlt, FaPrint, FaWatchmanMonitoring, FaCalculator } from "react-icons/fa";
 
 const MyRequests = () => {
   const { list, loading, error } = useSelector((state) => state.requests);
@@ -27,6 +27,8 @@ const MyRequests = () => {
     keyboard: <FaKeyboard className="text-5xl text-purple-400" />,
     mobile: <FaMobileAlt className="text-5xl text-yellow-400" />,
     printer: <FaPrint className="text-5xl text-red-400" />,
+    calculator: <FaCalculator className="text-5xl text-red-400" />,
+    
   };
 
   return (
