@@ -58,7 +58,7 @@ export const Login=async(req,res)=>{
     }
     const token=jwt.sign({id:user._id, role: user.role },process.env.SECRET_KEY);
 
-    return res.status(200).cookie("token",token,{httpOnly:true}).json({
+    return res.status(200).cookie("token",token,{httpOnly:true,secure: false,sameSite: "lax",}).json({
         message:`Welecome back ${user.name}`,
         user,
         success:true

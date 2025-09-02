@@ -30,15 +30,15 @@ export const createRequest = async (req, res) => {
 
 export const getMyRequests = async (req, res) => {
   try {
-    const requests = await Request.find({ requestedBy: req.user._id,approvedBy: req.user._id }).populate('requestedBy', 'name email')
-    .populate('approvedBy', 'name email');
-    console.log(requests);
-    
+    const requests = await Request.find({ requestedBy: req.user?.id })
+    .populate('requestedBy', 'name email');
     res.json(requests);
   } catch (error) {
+    console.error("ERROR in getMyRequests:", error);
     res.status(500).json({ message: 'Failed to fetch requests', error });
   }
 };
+
 
 
 export const getPendingRequests = async (req, res) => {

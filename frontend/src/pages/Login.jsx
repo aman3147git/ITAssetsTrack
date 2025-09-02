@@ -21,8 +21,7 @@ const Login = () => {
 
       
       dispatch(setUser(res.data.user));
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.token);
+      
 
       
       if (res.data.user.role === "manager") {

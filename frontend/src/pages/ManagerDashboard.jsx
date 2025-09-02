@@ -9,7 +9,7 @@ export default function ManagerDashboard() {
     loading,
     error,
   } = useSelector((s) => s.requests);
-  console.log("Redux state:", requestsRaw);
+  
 
   const requests = Array.isArray(requestsRaw) ? requestsRaw : [];
 
